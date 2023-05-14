@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Now Showing</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: rgb(255, 153, 0);
+		}
+		h1 {
+			margin: 20px;
+			text-align: center;
+			font-family: Georgia, 'Times New Roman', Times, serif;
+		}
+		
+		.movie-list {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		grid-gap: 20px;
+		padding: 20px;
+		box-sizing: border-box;
+		}
+
+		.movie-card {
+		background-color: #f2f2f2;
+		border-radius: 5px;
+		box-shadow: 0 0 10px rgba(0,0,0,0.3);
+		overflow: hidden;
+		height: 100%;
+		}
+		.movie-card img {
+		width: 100%;
+		height: 200px; /* change to your desired height */
+		object-fit: cover;
+		}
+
+		.movie-card h2 {
+		 margin: 10px;
+		 font-size: 15px;
+		}
+
+		.movie-card p {
+		margin: 5px;
+		font-size: 15px;
+		height: 50px; /* change to your desired height */
+		}
+		h3{
+			margin-left: 30px;
+		}
+
+		label[for="search-input"] {
+		font-size: 1.2em;
+		margin-right: 10px;
+		}
+		#search-input {
+		padding: 5px;
+		font-size: 1em;
+		border: 2px solid #ccc;
+		border-radius: 5px;
+		width: 200px;
+		}
+		#search-button {
+		padding: 5px 10px;
+		font-size: 1em;
+		color: #fff;
+		background-color: #0077cc;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+		}
+		#search-button:hover {
+		background-color: #005ea2;
+		}
+		.genre-buttons a{
+			text-decoration: none;
+		}
+
+
+	</style>
+</head>
+<body>
+	<h1>Now Showing</h1>
+	<label for="search-input">Search for movie title:</label>
+    <input type="text" id="search-input" placeholder="Enter a movie title...">
+    <button id="search-button">Search</button>
+
+	<div class="genre-buttons">
+		<button class="genre-btn romance-btn"><a href="now-showing.html">Romance</a></button>
+		<button class="genre-btn action-btn"><a href="genres/actiongenre.html">Action</a></button>
+		<button class="genre-btn comedy-btn"><a href="genres/comedygenre.html">Comedy</a></button>
+	</div>
+		<h3>Romance</h3>
+		<div class="movie-list">
+		<div class="movie-card" data-genre="romance">
+			
+			<img src="images/movie1.jpg" alt="Movie 1">
+			<h2>VEERAM</h2>
+			<p>Description of Movie 1</p>
+			<p>Showtimes: 10:00 AM, 1:00 PM, 4:00 PM, 7:00 PM</p>
+		</div>
+		<div class="movie-card" data-genre="romance">
+			<img src="images/movie2.jpg" alt="Movie 2">
+			<h2>AYOGYA</h2>
+			<p>Description of Movie 2</p>
+			<p>Showtimes: 11:00 AM, 2:00 PM, 5:00 PM, 8:00 PM</p>
+		</div>
+		<div class="movie-card" data-genre="romance">
+			<img src="images/r-movie3.jpg" alt="Movie 3">
+			<h2>LOVE STORY</h2>
+			<p>Description of Movie 3</p>
+			<p>Showtimes: 12:00 PM, 3:00 PM, 6:00 PM, 9:00 PM</p>
+		</div>
+		<div class="movie-card" data-genre="romance">
+			<img src="images/r-movie4.jpg" alt="Movie 4">
+			<h2>ALAIPAYUDHE</h2>
+			<p>Description of Movie 4</p>
+			<p>Showtimes: 1:00 PM, 4:00 PM, 7:00 PM, 10:00 PM</p>
+		</div>
+	</div>
+	<script>
+	const movieCards = document.querySelectorAll('.movie-card');
+    const searchInput = document.querySelector('#search-input');
+    const searchButton = document.querySelector('#search-button');
+    
+    searchButton.addEventListener('click', function () {
+      const searchQuery = searchInput.value.toLowerCase();
+      let isMatchFound = false;
+      movieCards.forEach(function (card) {
+        const title = card.querySelector('h2').textContent.toLowerCase();
+        if (title.includes(searchQuery)) {
+          card.style.display = 'block';
+          isMatchFound = true;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      if (!isMatchFound) {
+        alert('Movie not found');
+      }
+    });
+	const romanceBtn = document.querySelector('.romance-btn');
+const actionBtn = document.querySelector('.action-btn');
+const comedyBtn = document.querySelector('.comedy-btn');
+const allMovies = document.querySelectorAll('.movie-card');
+
+romanceBtn.addEventListener('click', function() {
+  filterMoviesByGenre('romance');
+});
+
+actionBtn.addEventListener('click', function() {
+  filterMoviesByGenre('action');
+});
+
+comedyBtn.addEventListener('click', function() {
+  filterMoviesByGenre('comedy');
+});
+
+function filterMoviesByGenre(genre) {
+  allMovies.forEach(function(movie) {
+    if (genre === 'all' || movie.getAttribute('data-genre') === genre) {
+      movie.style.display = 'block';
+    } else {
+      movie.style.display = 'none';
+    }
+  });
+
+  updateGenreTitle(genre);
+}
+
+function updateGenreTitle(genre) {
+  let title = 'All Genres';
+  if (genre === 'romance') {
+    title = 'Romance';
+  } else if (genre === 'action') {
+    title = 'Action';
+  } else if (genre === 'comedy') {
+    title = 'Comedy';
+  }
+  document.querySelector('#genre-title').textContent = title;
+}
+	  </script>
+</body>
+</html>

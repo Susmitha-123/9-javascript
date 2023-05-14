@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Movie Ticket Booking</title>
+	<style>		        
+    /* Add some background and padding to the page */
+    body {
+    background-color: #ff8000;
+    background-image: url('body bg.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;    }
+
+    /* Center the movie ticket booking form */
+    form {
+    max-width: 600px;
+    background:linear-gradient(45deg, #ff6a00, #ffffff);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    }
+
+    /* Style the movie ticket booking form header */
+    header{
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: #ff9100;
+    background-color: #000000;
+    }
+
+    /* Style the movie select label */
+    label[for="movie"] {
+    display: block;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #004895;
+    }
+
+    /* Style the movie select dropdown */
+    select#movie {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 2px solid #ccc;
+    font-size: 18px;
+    }
+
+    /* Style the show time select label */
+    label[for="show-time"] {
+    display: block;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    color: #004895;
+    }
+
+    /* Style the show time select dropdown */
+    select#show-time {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 2px solid #ccc;
+    font-size: 18px;
+    }
+
+    /* Style the selected show time text */
+    #selected-show-time {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 20px;
+    color: #0077c2;
+    }
+
+    /* Style the seat container */
+    #seat-container {
+    margin-top: 30px;
+    }
+
+    /* Style the seat */
+    .seat {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    background-color: #2fb543;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 50px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #fff;
+    }
+
+    /* Style the selected seat */
+    .seat.selected {
+    background-color: yellow;
+    color: #000000;
+    cursor: default;
+    }
+
+    /* Style the booked seat */
+    .seat.booked {
+    background-color: blue;
+    cursor: default;
+    }
+
+    /* Style the total and error elements */
+    #total, #error {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 30px;
+    }
+
+    /* Style the booking summary */
+    #booking-summary {
+    margin-top: 30px;
+    font-size: 20px;
+    
+    }
+
+    /* Style the booked seats count and total price elements */
+    #booked-seats-count, #total-price {
+    font-weight: normal;
+    color: #ffffff;
+    font-weight: bold;
+    }
+
+    /* Style the countdown element */
+    #countdown {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 30px;
+    color: #000000;
+ 
+    }
+
+	</style>
+</head>
+<body>
+	<header>BOX OFFICE-Easy Booking</header>
+	<form>
+        
+		<label for="movie">Select a movie:</label>
+		<select id="movie" name="movie">
+			<option value="avengers">Avengers: Endgame</option>
+			<option value="joker">Joker</option>
+			<option value="parasite">Parasite</option>
+		</select>
+        <label for="show-time">Select a show timing:</label>
+        <select id="show-time" name="show-time">
+          <optgroup label="Avengers: Endgame">
+            <option value="avengers-10am">10:00 AM</option>
+            <option value="avengers-1pm">1:00 PM</option>
+            <option value="avengers-4pm">4:00 PM</option>
+            <option value="avengers-7pm">7:00 PM</option>
+          </optgroup>
+          <optgroup label="Joker">
+            <option value="joker-11am">11:00 AM</option>
+            <option value="joker-2pm">2:00 PM</option>
+            <option value="joker-5pm">5:00 PM</option>
+            <option value="joker-8pm">8:00 PM</option>
+          </optgroup>
+          <optgroup label="Parasite">
+            <option value="parasite-12pm">12:00 PM</option>
+            <option value="parasite-3pm">3:00 PM</option>
+            <option value="parasite-6pm">6:00 PM</option>
+            <option value="parasite-9pm">9:00 PM</option>
+          </optgroup>
+        </select>
+        <div id="selected-show-time"></div>
+		<div id="seat-container"></div>
+		<div id="total"></div>
+		<button type="submit" class="btn">Book Tickets</button>
+		<div id="error"></div>
+        <div id="booking-summary">
+            <p>Total Seats Booked: <span id="booked-seats-count"></span></p>
+            <p>Total Price: <span id="total-price"></span></p>
+        </div>
+        <div id="countdown"></div>
+        
+                
+	</form>
+	<script>
+		const seats = {
+			avengers: {
+				available: ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9','A10','B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9','B10','C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8','C9','C10'],
+				booked: ['A4', 'B4', 'C4', 'D1', 'D2', 'B2']
+			},
+			joker: {
+				available: ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9','A10','B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9','B10','C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8','C9','C10'],
+				booked: ['A4','A5','A6', 'B4','B2','B3', 'C4']
+			},
+			parasite: {
+				available: ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9','A10','B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9','B10','C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8','C9','C10'],
+				booked: ['A4', 'B4', 'C4','C8','C10']
+			}
+		};
+
+		const prices = {
+			avengers: 12,
+			joker: 10,
+			parasite: 10
+		};
+       
+
+        const showTimeSelect = document.getElementById('show-time');
+        const selectedShowTimeElement = document.getElementById('selected-show-time');
+    showTimeSelect.addEventListener('change', () => {
+    const selectedShowTime = showTimeSelect.value;
+    selectedShowTimeElement.innerText = `Selected Show Time: ${selectedShowTime}`;
+    });
+
+
+		const movieSelect = document.getElementById('movie');
+		const seatContainer = document.getElementById('seat-container');
+		const totalElement = document.getElementById('total');
+		const errorElement = document.getElementById('error');
+       
+        const nextShowTime = Date.parse('May 10, 2023 18:00:00');
+
+        
+        const countdownElement = document.getElementById('countdown');
+
+       
+        setInterval(() => {
+       
+        const timeDiff = nextShowTime - Date.now();
+
+        const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+        const minutes = Math.floor((timeDiff / (1000 * 60)) % 60);
+        const seconds = Math.floor((timeDiff / 1000) % 60);
+
+        
+        countdownElement.innerText = `Next show starts in ${hours} hours, ${minutes} minutes, and ${seconds} seconds`;
+        }, 1000);
+
+
+		let selectedSeats = [];
+
+    function generateSeats(movie) {
+        seatContainer.innerHTML = '';
+        selectedSeats = [];
+
+        seats[movie].available.forEach(seat => {
+            const seatElement = document.createElement('div');
+            seatElement.classList.add('seat');
+
+            if (seats[movie].booked.includes(seat)) {
+                seatElement.classList.add('booked');
+            } else {
+                seatElement.addEventListener('click', () => {
+                    if (!selectedSeats.includes(seat)) {
+                        selectedSeats.push(seat);
+                        seatElement.classList.add('selected');
+                    } else {
+                        cancelSeatBooking(event);
+                    }
+
+                    // Calculate total price
+                    let totalPrice = selectedSeats.length * prices[movie];
+                    totalElement.innerText = `Total Price: $${totalPrice}`;
+                });
+            }
+
+            seatElement.innerText = seat;
+            seatContainer.appendChild(seatElement);
+        });
+    }
+
+    function cancelSeatBooking(event) {
+        const seatElement = event.target;
+        const seatIndex = selectedSeats.indexOf(seatElement.innerText);
+
+        if (seatIndex !== -1) {
+            selectedSeats.splice(seatIndex, 1);
+            seatElement.classList.remove('selected');
+        }
+
+        let totalPrice = selectedSeats.length * prices[movieSelect.value];
+        totalElement.innerText = `Total Price: $${totalPrice}`;
+
+        let bookedSeatsCount = selectedSeats.length;
+        document.getElementById('booked-seats-count').innerText = bookedSeatsCount;
+    }
+
+    function validateForm(event) {
+    event.preventDefault();
+    if (selectedSeats.length === 0) {
+        errorElement.innerText = 'Please select at least one seat';
+    } else {
+        errorElement.innerText = '';
+        const totalPrice = selectedSeats.length * prices[movieSelect.value];
+        const bookedSeatsCount = selectedSeats.length;
+        alert(`Selected Seats: ${selectedSeats}\nTotal Price: $${totalPrice}`);
+
+        const bookedSeatsCountElement = document.querySelector('#booked-seats-count');
+        bookedSeatsCountElement.innerText = bookedSeatsCount;
+
+        const totalPriceElement = document.querySelector('#total-price');
+        totalPriceElement.innerText = `$${totalPrice}`;
+    }
+    }
+
+	movieSelect.addEventListener('change', () => {
+		selectedSeats = [];
+		generateSeats(movieSelect.value);
+		totalElement.innerText = '';
+	});
+
+	generateSeats(movieSelect.value);
+
+	const form = document.querySelector('form');
+	form.addEventListener('submit', validateForm);
+</script>
+</body>
+</html>
